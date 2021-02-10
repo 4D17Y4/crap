@@ -11,85 +11,26 @@ var i=0;//variable to check the coin state (front or back)
 var currentBackground;
 var currentCoin;
 var currentOdd;
-var change=50;
-/* clear Table */ 
-function clearTable(){
-    var playArea=document.getElementById('playArea');
-    playArea.innerHTML="";
-}
 
+/**
+ * starting game
+ */
 function start(){
     choose();
     rebuildTable();
     correct();
 }
 
-/* rebuild Table on level change */
-//creating coins.
-//needs some polishing for sure
-function createElement(){
-    var element=document.createElement('td');
-    var  coin =document.createElement('dev');
-    coin.id="coin";
-    coin.className="flip-container";
-    // coin.addEventListener('click',function(){
-    //     onClick();
-    // });
-    var flipper=document.createElement('div');
-    flipper.className="flipper";
-    var front=document.createElement('div');
-    front.className="front";
-    front.style.background=currentCoin;
-    front.style.height=size[(num-2)%maxLev];
-    front.style.width=size[(num-2)%maxLev];
-    var back=document.createElement('div');
-    back.className="back";
-    back.style.background=currentCoin;
-    back.style.height=size[(num-2)%maxLev];
-    back.style.width=size[(num-2)%maxLev];
-    flipper.append(front);
-    flipper.append(back);
-    flipper.style.height=size[(num-2)%maxLev];
-    flipper.style.width=size[(num-2)%maxLev];
-    flipper.style.margin=margins[(num-2)%maxLev];
-    coin.append(flipper);
-    element.append(coin);
-    return element;
-}
-//creating a row with num no of elements
-function createRow(){
-    var row =document.createElement('tr');
-    for(var nCol=0;nCol<num;nCol++)
-    {
-        row.append(createElement());
-    }
-    return row;
-}
-//craating table with n num of rows
-function fade(element) {
-    var op = 1;  // initial opacity
-    var timer = setInterval(function () {
-        if (op <= 0.1){
-            clearInterval(timer);
-            element.style.display = 'none';
-        }
-        element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-        op -= op * 0.1;
-    }, 5);
-}
-function unfade(element) {
-    var op = 0.1;  // initial opacity
-    element.style.display = 'block';
-    var timer = setInterval(function () {
-        if (op >= 1){
-            clearInterval(timer);
-        }
-        element.style.opacity = op;
-        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-        op += op * 0.1;
-    }, 5);
-}
+/**
+ * Rebuilds table.
+ * 1. fade current elements
+ * 2. change background();
+ * 3. insert new rows
+ * 4. unfade
+ * 5. increasing num to count the number of elements in each row and column.
+ * 6. setting up the table colors front and back
+ * 7. changing background color
+ */
 function rebuildTable(){
     var x=document.getElementById('playArea');
     fade(x);
@@ -130,9 +71,81 @@ function rebuildTable(){
     },200);
     
 }
+//fade elements
+//takes approx 100 milliseconds
+function fade(element) {
+    var op = 1;  // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.1){
+            clearInterval(timer);
+            element.style.display = 'none';
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 5);
+}
+//unfade elements
+//takes approx 100 milliseconds
+function unfade(element) {
+    var op = 0.1;  // initial opacity
+    element.style.display = 'block';
+    var timer = setInterval(function () {
+        if (op >= 1){
+            clearInterval(timer);
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op += op * 0.1;
+    }, 5);
+}
+//clear table
+function clearTable(){
+    var playArea=document.getElementById('playArea');
+    playArea.innerHTML="";
+}
+//creating coins.
+//needs some polishing for sure
+function createElement(){
+    var element=document.createElement('td');
+    var  coin =document.createElement('dev');
+    coin.id="coin";
+    coin.className="flip-container";
+    var flipper=document.createElement('div');
+    flipper.className="flipper";
+    var front=document.createElement('div');
+    front.className="front";
+    front.style.background=currentCoin;
+    front.style.height=size[(num-2)%maxLev];
+    front.style.width=size[(num-2)%maxLev];
+    var back=document.createElement('div');
+    back.className="back";
+    back.style.background=currentCoin;
+    back.style.height=size[(num-2)%maxLev];
+    back.style.width=size[(num-2)%maxLev];
+    flipper.append(front);
+    flipper.append(back);
+    flipper.style.height=size[(num-2)%maxLev];
+    flipper.style.width=size[(num-2)%maxLev];
+    flipper.style.margin=margins[(num-2)%maxLev];
+    coin.append(flipper);
+    element.append(coin);
+    return element;
+}
+//creating a row with num no of elements
+function createRow(){
+    var row =document.createElement('tr');
+    for(var nCol=0;nCol<num;nCol++)
+    {
+        row.append(createElement());
+    }
+    return row;
+}
 
 
-/*colors*/
+/*
+*Color functions
+*/
 //lighten or darken a color
 function shadeColor(color, percent) {
 
@@ -154,7 +167,9 @@ function shadeColor(color, percent) {
 
     return "#"+RR+GG+BB;
 }
+
 //choosing colors
+//50-50 chance of choosing light or dark shaded odd color
 function choose(){
     currentBackground=getRandomColor();
     currentCoin=getRandomColor();
@@ -175,17 +190,12 @@ function getRandomColor() {
     }
     return color;
 }
-//restricting multiple taps.
-var isActive=true;
 
-//getsElementColor
-function getColor(rowIndex,colIndex){
-    var toFind=".back";
-    if(i%2==0)
-    toFind = ".front";
-    var coin=document.getElementById('playArea').rows[rowIndex].cells[colIndex].querySelector(toFind);
-    return coin.style.background;
-}
+
+/**
+ * checks Win condition
+ * algo: check color with forward and down if both are false its win
+ */
 function checkWin(rowIndex,colIndex){
     var colorthis=getColor(rowIndex,colIndex);
     var colorForward=getColor(rowIndex,(colIndex+1)%(num-1));
@@ -197,12 +207,30 @@ function checkWin(rowIndex,colIndex){
     console.log("false");
         return false;
 }
+//helper function 
+//getsElementColor
+function getColor(rowIndex,colIndex){
+    var toFind=".back";
+    if(i%2==0)
+    toFind = ".front";
+    var coin=document.getElementById('playArea').rows[rowIndex].cells[colIndex].querySelector(toFind);
+    return coin.style.background;
+}
+
+
+/**
+ * Clicked
+ * getting the nearest element clicked
+ * and performing actions of win and lose
+ */
 $(document).on('click','#coin',function(){
     var col=$(this).closest('td').index();
     var row=$(this).closest('tr').index();
     console.log(row+" "+ col);
     onClick(row,col);
 })
+
+var isActive=true;//restricting multiple taps.
 
 function onClick(row,col){
     if(checkWin(row,col)){
@@ -219,6 +247,13 @@ function onClick(row,col){
         fail();
     }
 }
+
+
+/**
+ * correct
+ * increase score 
+ * reset timer
+ */
 var tick=0;
 var score=0;
 function correct(){
@@ -230,15 +265,26 @@ function correct(){
     $('#load').css('width',percent);
     clock();
 }
+
+/**
+ * fail
+ * increase the timer by 1/5
+ */
 function fail(){
-    // tick+=100;
+    tick+=100;
 }
+
+/**
+ * LevelUp
+ * probability of difficulty increase on each correct = 1-e;
+ */
+var probability=0.6;
 function log3(val) {
     return Math.log(val) / Math.log(3);
 }
 function levelUp(){
     var random=Math.random();
-    if(random>0.60)
+    if(random>probability)
     difficulty/=1.1;
     var pre=Math.floor(log3(score+3));
     var now=Math.floor(log3(score+4));
@@ -251,12 +297,18 @@ function levelUp(){
         flip();
     }
 }
-// clock
+
+/**
+ * Timer
+ * time * limit = total time in milliseconds.
+ * timer variable to stop the timer and reset in when required.
+ */
 var time=10;
+var limit=500;
 var timer;
 function clock(){
     tick++;
-    if(tick>500){
+    if(tick>limit){
         timeout();
     }
     else{
@@ -266,6 +318,10 @@ function clock(){
     }
 }
 
+
+/* Time limit reached for level completion */
+// restrict taps (click events)
+// highlight the odd element
 function timeout(){
     $('#playArea').css('pointer-events','none');
     for(var k=0;k<num-1;k++){
@@ -282,39 +338,9 @@ function timeout(){
 }
 
 
-// var loader = document.getElementById('loader')
-//   , border = document.getElementById('border')
-//   , α = 0
-//   , π = Math.PI
-//   , t = 30;
-// function draw() {
-//   α++;
-//   α %= 360;
-//   var r = ( α * π / 180 )
-//     , x = Math.sin( r ) * 50
-//     , y = Math.cos( r ) * - 50
-//     , mid = ( α > 180 ) ? 1 : 0
-//     , anim = 'M 0 0 v -50 A 50 50 1 ' 
-//            + mid + ' 1 ' 
-//            +  x  + ' ' 
-//            +  y  + ' z';
-//   //[x,y].forEach(function( d ){
-//   //  d = Math.round( d * 1e3 ) / 1e3;
-//   //});
- 
-//   loader.setAttribute( 'd', anim );
-//   border.setAttribute( 'd', anim );
-//   setTimeout(draw,t)// Redraw
-// }
-
-// function penalty(){
-//     // α+=60;
-//     draw();
-// }
 
 
-
-//changing bakground color
+//flipping all coins
 function changeBackground(){
     $('#body').animate({'background-color':currentBackground});
 }
@@ -347,5 +373,3 @@ function flip(){
             i++;
         },200);
 }
-
-//selecting color variation (major, miner)
