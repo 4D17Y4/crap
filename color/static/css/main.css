@@ -1,0 +1,59 @@
+/* bootstap container */
+body{
+padding-top: 20px;
+}
+.box-container{
+    width: 600px;
+    min-height:600px;
+    margin:0 auto;
+}
+.best{
+    float:right;
+    margin-right: 100px;
+}
+.current{
+    float:left;
+    margin-left: 100px;
+}
+.head{
+    font-size:40px;
+}
+.value{
+    font-size:60px;
+}
+.score {
+    color: white;
+    display:inline-block;
+    font-family: 'Sigmar One', cursive;
+    text-align:center;
+    min-width: 40px;
+    font-style: bold;
+    text-shadow: 3px 4px rgb(104, 104, 104);
+}
+.gameZone{
+    width: 600px;
+    height: 540px;
+    margin: 0 auto;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+}
+#coin{
+    display: block;
+}
+#playArea{
+    margin: 0 auto;
+}
+p.title{
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color:red;
+    transform: translate(-50%, -50%);
+}
+.button{
+    border-radius: 50%;
+    color:red;
+    background-color:red;
+}
