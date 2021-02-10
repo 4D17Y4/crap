@@ -12,8 +12,8 @@ svg {
   #progressbar {
     /* background-color: black; */
     border-radius: 13px;
-    padding-left: 100px;
-    padding-right: 100px;
+    padding-left: var(--timer-length);
+    padding-right: var(--timer-length);
     /* (height of inner div) / 2 + padding */
   }
   

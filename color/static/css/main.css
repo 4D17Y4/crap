@@ -1,25 +1,62 @@
 /* bootstap container */
+:root {
+    --head-size:40px;
+    --value-size:60px;
+    --timer-length:100px;
+    --box-height:500px;
+    --box-width:600px;
+    --size2:116px;
+    --size3:105px;
+    --size4:90px;
+    --size5:80px;
+    --size6:70px;
+    --margin2:36px;
+    --margin3:18px;
+    --margin4:6px;
+    --margin5:4px;
+    --margin6:2px;
+  }
+  
+  @media screen and (max-width: 600px) {
+    :root{
+        --timer-length:50px;
+        --box-height:320px;
+        --box-width:320px;
+        --size2:68px;
+        --size3:60px;
+        --size4:52px;
+        --size5:48px;
+        --size6:44px;
+        --margin2:16px;
+        --margin3:7px;
+        --margin4:2px;
+        --margin5:2px;
+        --margin6:1px;
+        --head-size:20px;
+        --value-size:40px;
+    }
+  }
 body{
 padding-top: 20px;
 }
 .box-container{
-    width: 600px;
+    width: var(--box-width);
     min-height:600px;
     margin:0 auto;
 }
 .best{
     float:right;
-    margin-right: 100px;
+    margin-right: var(--timer-length);
 }
 .current{
     float:left;
-    margin-left: 100px;
+    margin-left: var(--timer-length);
 }
 .head{
-    font-size:40px;
+    font-size:var(--head-size);
 }
 .value{
-    font-size:60px;
+    font-size:var(--value-size);
 }
 .score {
     color: white;
@@ -31,8 +68,8 @@ padding-top: 20px;
     text-shadow: 3px 4px rgb(104, 104, 104);
 }
 .gameZone{
-    width: 600px;
-    height: 540px;
+    width: var(--box-width);
+    height: var(--box-height);
     margin: 0 auto;
     padding: 0px;
     display: flex;

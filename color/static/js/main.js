@@ -3,8 +3,6 @@ console.log('connected');
 
 /*variables*/
 var maxLev=6;// number of levels
-var margins=["40px","20px","10px","8px","4px"];//margins between coins on levels
-var size=["120px","105px","95px","85px","75px"];//coins dimentions 
 var difficulty=30.0;
 var num=2;//starting level
 var i=0;//variable to check the coin state (front or back)
@@ -16,6 +14,11 @@ var currentOdd;
  * starting game
  */
 function start(){
+    maxLev=6;
+    difficulty=30.0;
+    num=2;
+    i=0;
+    isActive = true;
     choose();
     rebuildTable();
     correct();
@@ -33,15 +36,15 @@ function start(){
  */
 function rebuildTable(){
     var x=document.getElementById('playArea');
-    fade(x);
+    fade(x,function(){buildAndFadeIn()});
     changeBackground();
-    setTimeout(function(){
+}
+function buildAndFadeIn(){
     clearTable();
     var playArea=document.getElementById('playArea');
     for(var nRow=0;nRow<num;nRow++){
         playArea.appendChild(createRow());
     }
-    playArea.opacity= 0;
     unfade(playArea)
     num++;
     if(num>6)
@@ -68,22 +71,22 @@ function rebuildTable(){
             }
     }
     $('#load').css('background-color',currentCoin);
-    },200);
-    
 }
 //fade elements
 //takes approx 100 milliseconds
-function fade(element) {
+function fade(element,callback) {
     var op = 1;  // initial opacity
     var timer = setInterval(function () {
-        if (op <= 0.1){
+        console.log('fade'+op);
+            if (op <= 0.1){
             clearInterval(timer);
             element.style.display = 'none';
+            callback();
         }
         element.style.opacity = op;
         element.style.filter = 'alpha(opacity=' + op * 100 + ")";
         op -= op * 0.1;
-    }, 5);
+    }, 2);
 }
 //unfade elements
 //takes approx 100 milliseconds
@@ -91,13 +94,14 @@ function unfade(element) {
     var op = 0.1;  // initial opacity
     element.style.display = 'block';
     var timer = setInterval(function () {
+        console.log('unfade'+op);
         if (op >= 1){
             clearInterval(timer);
         }
         element.style.opacity = op;
         element.style.filter = 'alpha(opacity=' + op * 100 + ")";
         op += op * 0.1;
-    }, 5);
+    }, 2);
 }
 //clear table
 function clearTable(){
@@ -116,18 +120,18 @@ function createElement(){
     var front=document.createElement('div');
     front.className="front";
     front.style.background=currentCoin;
-    front.style.height=size[(num-2)%maxLev];
-    front.style.width=size[(num-2)%maxLev];
+    front.style.height="var(--size"+num+")";
+    front.style.width="var(--size"+num+")";
     var back=document.createElement('div');
     back.className="back";
     back.style.background=currentCoin;
-    back.style.height=size[(num-2)%maxLev];
-    back.style.width=size[(num-2)%maxLev];
+    back.style.height="var(--size"+num+")";
+    back.style.width="var(--size"+num+")";
     flipper.append(front);
     flipper.append(back);
-    flipper.style.height=size[(num-2)%maxLev];
-    flipper.style.width=size[(num-2)%maxLev];
-    flipper.style.margin=margins[(num-2)%maxLev];
+    flipper.style.height="var(--size"+num+")";
+    flipper.style.width="var(--size"+num+")";
+    flipper.style.margin="var(--margin"+num+")";
     coin.append(flipper);
     element.append(coin);
     return element;
@@ -173,12 +177,12 @@ function shadeColor(color, percent) {
 function choose(){
     currentBackground=getRandomColor();
     currentCoin=getRandomColor();
-    var temp=Math.floor(Math.random()*100)%2;
-    if(temp){
+    var temp=Math.random();
+    if(temp>0.5){
         currentOdd=shadeColor(currentCoin,difficulty);
     }
     else{
-        currentOdd=shadeColor(currentCoin,difficulty);
+        currentOdd=shadeColor(currentCoin,-difficulty);
     }
 }
 //generating random color
@@ -284,8 +288,10 @@ function log3(val) {
 }
 function levelUp(){
     var random=Math.random();
-    if(random>probability)
-    difficulty/=1.1;
+    if(random>probability && difficulty>10)
+    {
+        difficulty/=1.1;
+    }
     var pre=Math.floor(log3(score+3));
     var now=Math.floor(log3(score+4));
     if(pre!=now){
@@ -323,7 +329,7 @@ function clock(){
 // restrict taps (click events)
 // highlight the odd element
 function timeout(){
-    $('#playArea').css('pointer-events','none');
+    isActive = false;
     for(var k=0;k<num-1;k++){
         for(var t=0;t<num-1;t++){
             if(checkWin(k,t))
@@ -335,6 +341,7 @@ function timeout(){
             }
         }
     }
+    console.log(difficulty);
 }
 
 
