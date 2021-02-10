@@ -265,9 +265,12 @@ function correct(){
     document.getElementById('current-score').innerHTML=score++;
     clearTimeout(timer);
     tick=0;
-    var percent= tick +"%";
-    $('#load').css('width',percent);
-    clock();
+    var percent= "100%";
+    document.getElementById('load').animate({width:'100%'},200);
+    // $('#load').css('width',percent);
+    setTimeout(function(){
+        clock();
+    },200);
 }
 
 /**
@@ -315,10 +318,11 @@ var timer;
 function clock(){
     tick++;
     if(tick>limit){
+        clearTimeout(timer);
         timeout();
     }
     else{
-    var percent= tick/5 +"%";
+    var percent= (500-tick)/5 +"%";
     $('#load').css('width',percent);
     timer=setTimeout(clock,time);
     }
